@@ -109,7 +109,7 @@ $(document).ready(function() {
 });
 
 firsttime = true;
-artist, album, artwork, titles, duration, links;
+var artist, album, artwork, titles, duration, links;
 function createFile() {
   firsttime = false;
   // remove HTML code/appended
@@ -149,10 +149,9 @@ function createFile() {
 	//appendAudio(0);
 	durationLength();
 }
-i = 0;
-runs = links.length-1;
+var i = 0;
+var runs = links.length-1;
 function appendAudio(n) {
-	var runs;
 	console.log(i,": Horse run. Out ouf ",runs);
 	if(i != runs) {
 		i++;
