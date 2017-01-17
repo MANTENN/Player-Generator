@@ -57,7 +57,7 @@
  <h2>Generator</h2>
  <ol class="breadcrumb">
  <li><a href="http://days4god.com/"><i class="ion-ios-home-outline"></i> Главная</a></li>
- <li><a href="/playergeneartor101.html">Playlist Generator</a></li>
+ <li><a href="/playergeneartor101.html">Playlist Generator <span id="mode" class="active" onclick="showModes();return false;"></span></a></li>
  </ol>
  </div>
  </div>
@@ -67,11 +67,56 @@
  </div>
  </div>
  </section>
-<section style="background-color:#fff;border-top:2px solid #f1f1f1;">
-		<div class="container">
-			<div class="row" style="display:none">
-				<input placeholder="URL retrieval..." id="url-path" style="min-width:100%;">
+ <style>
+	a.panel {
+		display:block;
+	}
+	.panel i {
+		font-size:150px;
+	}
+	.panel span {
+		font-size:35px;
+		display:block;
+	}
+ </style>
+ <section style="background-color:#f1f1f1;padding-top:20px;display:flex;" id="mode_select">
+	 <div class="container">
+		<div class="row">
+			<div class="col-md-4 text-center">
+				<a class="panel" onclick="selectMode('Visual');visualLoad();">
+					<i class="ion-ios-circle-filled"></i>
+					<span>Visual</span>
+				</a>
 			</div>
+			<div class="col-md-4 text-center">
+				<a class="panel" onclick="selectMode('URL')">
+					<i class="ion-link"></i>
+					<span>URL</span>
+				</a>
+			</div>
+			<div class="col-md-4 text-center">
+				<a class="panel" onclick="selectMode('Code')">
+					<i class="ion-code"></i>
+					<span>HTML or XMl</span>
+				</a>
+			</div>
+		</div>
+	 </div>
+ </section>
+ <section style="background-color:#fff;display:none;border-top:2px solid #f1f1f1;" id="Visual">
+	 <div class="container">
+		 <div class="row" id="visual_content_ajax">
+
+		 </div>
+	 </div>
+ </section>
+ <section style="background-color:#fff;display:none;border-top:2px solid #f1f1f1;" id="URL">
+	 <div class="container">
+			 <input placeholder="URL retrieval..." id="url-path" style="min-width:100%;">
+	 </div>
+ </section>
+<section style="background-color:#fff;display:none;border-top:2px solid #f1f1f1;" id="Code">
+		<div class="container">
 			<div class="row">
 				<div id="htmlplayground" style="display:none;"></div>
 				<ul id="links" style="display:none;"></ul>
@@ -97,17 +142,34 @@ textarea {
 }
 </style>
 <script>
-$(document).ready(function() {
-	$("#url-path").keyup(function(e) {
-		url = $("#url-path").val();
-		if(url != "") {
-			$("#artist,#album,#artwork,#input").prop("disabled",true);
-		} else {
-			$("#artist,#album,#artwork,#input").prop("disabled",false);
-		}
+function showModes() {
+	$("span#mode").text("");
+	$("#mode_select").css("display","block");
+	$("#Visual,#URL,#Code").css("display","none");
+}
+function selectMode(mode) {
+	$("span#mode").text(mode);
+	$("#mode_select").css("display","none");
+	$("#" + mode).css("display","block");
+	return false;
+}
+function visualLoad() {
+	$.ajax({
+		url: "http://days4god.com/api/load/",
+		dataType: "xml",
+		sucess: function(data) {
+			xmlData = $.parseXML(data);
+			xml = $(xmlData);
+			title = xml.find("value")
+			$("#visual_content_ajax").text(data);
+		},
+		error: function(response) {
+			$("#visual_content_ajax").text("Sorry An Error Occured.");
+			console.log(response);
+		},
+		type: "GET"
 	});
-});
-
+}
 firsttime = true;
 // Global variables to be used throughout multiple functions
 var artist, album, artwork,tracks;
@@ -145,7 +207,7 @@ function createFile() {
 	console.log("Appending Tracks...");
 	appendAudio(0);
 }
-
+// Work on Ajax function to check if such file exists to prevent the function from stopping.
 function appendAudio(n) {
 	if(n != tracks) { // recursive loop
 		$("#htmlplayground").html("<audio id=\"audiotrack" + n +"\" src=\""+ links[n] +"\" controls></audio>");
@@ -171,6 +233,7 @@ function getDuration(n) {
 		var myAudio = document.getElementById("audiotrack" + n); //Object Identifier
 		// parse the duration and append it into the array
 		duration[n] = parseInt(myAudio.duration.toFixed()); // Get duration of the Track and Round it and convert it into a integer
+		// Work on ajax version of this or php
 		console.log("Duration Set.");
 	});
 }
@@ -184,26 +247,19 @@ function getDurationLoop(n) {
 	}
 }
 function checkdurationLength() {
-	if(duration.length == tracks) {
+	if(duration.length == tracks) { // Check to make sure all
 		createPlayer();
 	} else {
-		console.log("Timeout");
-		setTimeout(function() {checkdurationLength();}, 2000);
+		appendAudio(0); // Work on something more complex than a recursive function - sorting algorithms...
 	}
 }
 function createPlayer() {
 	console.log("Creating Player for", artist , "-", album);
-	output = "<div style=\"margin:12px auto;\" align=\"center\">\n\t<div id=\"amazingaudioplayer-1\" style=\"display:block;position:relative;width:100%;height:auto;margin:0px auto 0px;\">\n\t\t<ul class=\"amazingaudioplayer-audios\" style=\"display:none;\">\n";
-	$.each(links, function(n) { // loop through each and create a li element
-		output += "\t\t\t<li data-artist=\""+artist+ //insert value into data-type
-							"\" data-title=\"" + titles[n] + //insert value into data-type
-							"\" data-album=\""+album+ //insert value into data-type
-							"\" data-info=\"\" data-image=\""+artwork+ //insert value into data-type
-							"\" data-duration=\""+duration[n]+ //insert value into data-type
-							"\">\n\t\t\t\t<div class=\"amazingaudioplayer-source\" data-src=\"" + links[n]+ //insert value into data-type
-							" \" data-type=\"audio/mpeg\"></div>\n\t\t\t</li>\n";
+	output = "<div id=\"amazingaudioplayer-1\" style=\"display:block;position:relative;width:100%;height:auto;margin:0px auto 0px;\">\n\t<ul class=\"amazingaudioplayer-audios\" style=\"display:none;\">\n";
+	$.each(links, function(n) {
+		output += "\t\t<li data-artist=\""+artist+"\" data-title=\"" + titles[n] + "\" data-album=\""+album+"\" data-info=\"\" data-image=\""+artwork+"\" data-duration=\""+duration[n]+"\">\n\t\t<div class=\"amazingaudioplayer-source\" data-src=\"" + links[n]+ " \" data-type=\"audio/mpeg\"></div>\n\t\t</li>\n";
 	});
-	output += "\t\t</ul>\n\t	</div>\n</div>";
+	output += "\t</ul>\n\n</div>";
 	$("#output").val(output);
 	console.log("Player has been created successfully!");
 }
