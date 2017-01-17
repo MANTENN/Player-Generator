@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Playlist Generator</title>
+<meta charset="utf-8" />
+<script
+			  src="http://code.jquery.com/jquery-3.1.1.min.js"
+			  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+			  crossorigin="anonymous"></script>
+				<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+				<meta name="format-detection" content="telephone=no">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+				<link type="text/css" rel="StyleSheet" href="http://www.days4god.com/_st/my.css" />
+				<link rel="stylesheet" type="text/css" media="all" href="http://www.days4god.com/css/bootstrap.min.css" />
+				<link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+				<link rel="stylesheet" href="http://www.days4god.com/css/main.css">
+				<link rel="stylesheet" href="http://www.days4god.com/css/responsive.css">
+				<link rel="stylesheet" href="http://www.days4god.com/css/css.css">
+				<link rel="stylesheet" href="http://www.days4god.com/css/skin.css">
+</head>
+<body>
+<header id="top-bar" class="navbar-fixed-top dark">
+<div class="container">
+<div class="navbar-header">
+<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+<span class="sr-only"></span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+</button>
+<div class="navbar-brand">
+<a href="/">
+<img src="http://www.days4god.com/logo.svg"><!--- <span>modernity</span> --->
+</a>
+</div>
+</div>
+<nav class="collapse navbar-collapse navbar-right" role="navigation">
+<div class="main-menu">
+<!-- <sblock_nmenu> -->
+
+<!-- <bc> --><div id="uNMenuDiv1" class="uMenuV"><ul class="uMenuRoot">
+<li><a href="/"><span>Главная страница</span></a></li>
+
+</ul></div><!-- </bc> -->
+
+<!-- </sblock_nmenu> -->
+
+</div></nav>
+</div>
+</header>
+<div class="wrapperbod">
+<section class="global-page-header music">
+ <div class="container">
+ <div class="row">
+ <div class="col-md-10">
+ <div class="block">
+ <h2>Generator</h2>
+ <ol class="breadcrumb">
+ <li><a href="http://days4god.com/"><i class="ion-ios-home-outline"></i> Главная</a></li>
+ <li><a href="/playergeneartor101.html">Playlist Generator</a></li>
+ </ol>
+ </div>
+ </div>
+ <div class="col-md-2" style="padding: 5px 15px;">
+	 <input type="button" value="Create Playlist Page" onclick="createFile();" class="pull-right">
+ </div>
+ </div>
+ </div>
+ </section>
+<section style="background-color:#fff;border-top:2px solid #f1f1f1;">
+		<div class="container">
+			<div class="row">
+				<input placeholder="URL retrieval..." id="url-path" style="min-width:100%;">
+			</div>
+			<div class="row">
+				<div id="htmlplayground" style="display:none;"></div>
+				<ul id="links" style="display:none;"></ul>
+				<audio id="audiotrack"></audio>
+				<div class="col-md-12" style="padding: 20px 15px;">
+					<input placeholder="Artist..." id="artist">
+					<input placeholder="Album..." id="album">
+					<input placeholder="Artwork..." id="artwork">
+				</div>
+				<div class="col-md-6">
+					<textarea placeholder="HTML Input..." cols="120" rows="30" id="input"></textarea>
+				</div>
+				<div class="col-md-6">
+					<textarea placeholder="HTML Output..." cols="120" rows="30" id="output" readonly="readonly"></textarea>
+				</div>
+			</div>
+	</div>
+</section>
+</div>
+<style>
+textarea {
+    resize: none;
+}
+</style>
+<script>
+$(document).ready(function() {
+	$("#url-path").keyup(function(e) {
+		url = $("#url-path").val();
+		if(url != "") {
+			$("#artist,#album,#artwork,#input").prop("disabled",true);
+		} else {
+			$("#artist,#album,#artwork,#input").prop("disabled",false);
+		}
+	});
+});
+
+firsttime = true;
+artist, album, artwork, titles, duration, links;
+function createFile() {
+  firsttime = false;
+  // remove HTML code/appended
+  if(firsttime == false) {
+    $("#links").html("");
+		$("#htmlplayground").html("");
+  }
+	// Get Data from input
+  artist = $("#artist").val();
+  album = $("#album").val();
+  artwork = $("#artwork").val();
+  input = $("#input").val();
+	// Replace content in that element w/ user input
+  $("#htmlplayground").html(input);
+	// Declare duration as a varible to append later
+  duration = [];
+	// Get title of the track based on the text next to the link text
+  titles = $("#htmlplayground a").map(function() {
+    return this.previousSibling.nodeValue;
+  });
+  // console.log(titles);
+	// The same as titles, only to retrieve links
+  links = $("#htmlplayground a").map(function() {
+    return this.href;
+  }).get();
+  // console.log(links);
+	// Clean up the HTML section of user input
+	$("#htmlplayground").html("");
+	// for Each track link
+
+	// Append HTML Player
+	$.each(links, function(n) {
+		$("#htmlplayground").append("<audio id=\"audiotrack" + n +"\" src=\""+ links[n] +"\" controls></audio>");
+		// on play status
+		getDuration(n);
+	});
+	//appendAudio(0);
+	durationLength();
+}
+i = 0;
+runs = links.length-1;
+function appendAudio(n) {
+	var runs;
+	console.log(i,": Horse run. Out ouf ",runs);
+	if(i != runs) {
+		i++;
+		appendAudio(i);
+	} else {
+		console.log(i,": Horse run complete.")
+		// Clean up HTML after function has done it's job
+		// $("#htmlplayground").html();
+	}
+}
+function getDuration(n) {
+	$("#audiotrack" + n).on("canplaythrough", function(e){
+		// declare elment in a variable
+		var myAudio = document.getElementById("audiotrack" + n); //Object Identifier
+		// parse the duration and append it into the array
+		console.log("Setting duration for", n);
+		duration[n] = parseInt(myAudio.duration.toFixed()); // Get duration of the Track and Round it and convert it into a integer
+		// set loaded for that track - track duration is in the list/verification
+	});
+}
+function durationLength() {
+	if(duration !=0) {
+		createPlayer();
+	} else {
+		console.log("Timeout");
+		setTimeout(function() {durationLength();}, 2000);
+	}
+}
+function createPlayer() {
+	console.log("Creating Player for", artist , "-", album);
+	output = "<div id=\"amazingaudioplayer-1\" style=\"display:block;position:relative;width:100%;height:auto;margin:0px auto 0px;\">\n\t<ul class=\"amazingaudioplayer-audios\" style=\"display:none;\">\n";
+	$.each(links, function(n) {
+		output += "\t\t<li data-artist=\""+artist+"\" data-title=\"" + titles[n] + "\" data-album=\""+album+"\" data-info=\"\" data-image=\""+artwork+"\" data-duration=\""+duration[n]+"\">\n\t\t<div class=\"amazingaudioplayer-source\" data-src=\"" + links[n]+ " \" data-type=\"audio/mpeg\"></div>\n\t\t</li>\n";
+	});
+	output += "\t</ul>\n\n</div>";
+	$("#output").val(output);
+	console.log("Player has been created successfully!");
+}
+</script>
+<footer id="footer" style="background-color:#333;">
+<div class="container">
+<div class="row align-left">
+
+ <!-- Widget -->
+ <div class="col-sm-6 col-md-3">
+ <div class="widget">
+
+ <h5 class="widget-title font-alt">Медиа</h5>
+
+ <div class="widget-body">
+<ul class="arrow">
+ <li>
+ <a href="/audio/music" title="">Музыка</a>
+ </li>
+ <li>
+ <a href="/video" title="">Видео</a>
+ </li>
+ <li>
+ <a href="/audio/sermons" title="">Проповедь</a>
+ </li>
+ <li>
+ <a href="/audio/testimonies" title="">Свидетельства</a>
+ </li>
+ <li>
+ <a href="/audio/bible" title="">Библия</a>
+ </li>
+ </ul>
+ </div>
+
+ </div>
+ </div>
+
+
+ <div class="col-sm-6 col-md-3">
+ <div class="widget">
+
+ <h5 class="widget-title font-alt">Общое</h5>
+
+ <div class="widget-body">
+ <ul class="arrow">
+ <li>
+ <a href="/blog/1-0-8" title="">Для Молодежи</a>
+ </li>
+ <li>
+ <a href="/publ/29" title="">Кухня Марфы</a>
+ </li>
+ <li>
+ <a href="/publ/2" title="">Стихи</a>
+ </li>
+ <li>
+ <a href="/publ/56" title="">Пожелания</a>
+ </li>
+ <li>
+ <a href="/forum" title="">Форум</a>
+ </li>
+ </ul>
+ </div>
+
+ </div>
+ </div>
+
+ <div class="col-sm-6 col-md-3">
+<div class="widget">
+<h5 class="widget-title font-alt">О нас</h5>
+<div class="widget-body">
+ <ul class="arrow">
+ <li>
+ <a href="/ourteam" title="">Наша Команда</a>
+ </li>
+ <li>
+ <a href="/index/0-34" title="">Наши Баннеры</a>
+ </li>
+ <li>
+ <a href="/gb" title="">Нам Пишут</a>
+ </li>
+ <li>
+ <a href="/faq" title="">Вопрос/Ответ</a>
+ </li>
+ <li>
+ <a href="#" title="">Пользовательское соглашение</a>
+ </li>
+ </ul>
+</div>
+</div>
+</div>
+
+ <div class="col-sm-6 col-md-3">
+ <div class="widget">
+
+ <h5 class="widget-title font-alt">Служба поддержки</h5>
+
+ <div class="widget-body">
+ <ul class="arrow">
+ <li>
+ <a href="skype:www.days4god.com" title="">Skype: www.Days4GOD.com</a>
+ </li>
+ <li>
+ <a href="mailto:info@days4god.com" title="">E-mail: info@Days4GOD.com</a>
+ </li>
+ <li>
+ <a href="/index/0-11" title="">Обратная связь</a>
+ </li>
+ <li>
+ <a href="tel:19168992832" title="">Тел: +1 ( 916 ) 899-28-32</a>
+ </li>
+ </ul>
+ </div>
+
+ </div>
+ </div>
+
+</div>
+<hr>
+<div class="col-md-10">
+ <p class="copyright">При копировании материалов, ссылка на сайт обяательна. Запрещено удаление watermark с изображений.| Days4GOD.com © 2007 - 2016
+</p>
+</div>
+<div class="col-md-2">
+<!-- Social Media -->
+<ul class="social">
+<li><a href="https://www.facebook.com/Дни-Для-Богасом-159428154068174/" class="Facebook"><i class="ion-social-facebook"></i></a></li>
+</ul>
+</div>
+</div>
+</footer>
+</body>
+</html>
