@@ -142,11 +142,10 @@ function createFile() {
 
 	// Append HTML Player
 	$.each(links, function(n) {
-		$("#htmlplayground").append("<audio id=\"audiotrack" + n +"\" src=\""+ links[n] +"\" controls></audio>");
 		// on play status
 		getDuration(n);
 	});
-	//appendAudio(0);
+	appendAudio(0);
 	durationLength();
 }
 var i = 0;
@@ -154,6 +153,7 @@ var runs = links.length-1;
 function appendAudio(n) {
 	console.log(i,": Horse run. Out ouf ",runs);
 	if(i != runs) {
+		$("#htmlplayground").append("<audio id=\"audiotrack" + n +"\" src=\""+ links[n] +"\" controls></audio>");
 		i++;
 		appendAudio(i);
 	} else {
