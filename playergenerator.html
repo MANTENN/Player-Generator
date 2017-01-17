@@ -2,7 +2,6 @@
 <html>
 <head>
 <title>Playlist Generator</title>
-<meta charset="utf-8" />
 <script
 			  src="http://code.jquery.com/jquery-3.1.1.min.js"
 			  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
@@ -10,13 +9,13 @@
 				<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
 				<meta name="format-detection" content="telephone=no">
 				<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-				<link type="text/css" rel="StyleSheet" href="http://www.days4god.com/_st/my.css" />
-				<link rel="stylesheet" type="text/css" media="all" href="http://www.days4god.com/css/bootstrap.min.css" />
+				<link type="text/css" rel="StyleSheet" href="/_st/my.css" />
+				<link rel="stylesheet" type="text/css" media="all" href="/css/bootstrap.min.css" />
 				<link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-				<link rel="stylesheet" href="http://www.days4god.com/css/main.css">
-				<link rel="stylesheet" href="http://www.days4god.com/css/responsive.css">
-				<link rel="stylesheet" href="http://www.days4god.com/css/css.css">
-				<link rel="stylesheet" href="http://www.days4god.com/css/skin.css">
+				<link rel="stylesheet" href="/css/main.css">
+				<link rel="stylesheet" href="/css/responsive.css">
+				<link rel="stylesheet" href="/css/css.css">
+				<link rel="stylesheet" href="/css/skin.css">
 </head>
 <body>
 <header id="top-bar" class="navbar-fixed-top dark">
@@ -30,7 +29,7 @@
 </button>
 <div class="navbar-brand">
 <a href="/">
-<img src="http://www.days4god.com/logo.svg"><!--- <span>modernity</span> --->
+<img src="/logo.svg"><!--- <span>modernity</span> --->
 </a>
 </div>
 </div>
@@ -70,11 +69,8 @@
 <section style="background-color:#fff;border-top:2px solid #f1f1f1;">
 		<div class="container">
 			<div class="row">
-				<input placeholder="URL retrieval..." id="url-path" style="min-width:100%;">
-			</div>
-			<div class="row">
-				<div id="htmlplayground" style="display:none;"></div>
-				<ul id="links" style="display:none;"></ul>
+				<div id="htmlplayground"></div>
+				<ul id="links"></ul>
 				<audio id="audiotrack"></audio>
 				<div class="col-md-12" style="padding: 20px 15px;">
 					<input placeholder="Artist..." id="artist">
@@ -82,10 +78,10 @@
 					<input placeholder="Artwork..." id="artwork">
 				</div>
 				<div class="col-md-6">
-					<textarea placeholder="HTML Input..." cols="120" rows="30" id="input"></textarea>
+					<textarea placeholder="Input..." cols="120" rows="30" id="input"></textarea>
 				</div>
 				<div class="col-md-6">
-					<textarea placeholder="HTML Output..." cols="120" rows="30" id="output" readonly="readonly"></textarea>
+					<textarea placeholder="Output..." cols="120" rows="30" id="output"></textarea>
 				</div>
 			</div>
 	</div>
@@ -97,19 +93,12 @@ textarea {
 }
 </style>
 <script>
-$(document).ready(function() {
-	$("#url-path").keyup(function(e) {
-		url = $("#url-path").val();
-		if(url != "") {
-			$("#artist,#album,#artwork,#input").prop("disabled",true);
-		} else {
-			$("#artist,#album,#artwork,#input").prop("disabled",false);
-		}
-	});
-});
+/*
+Made by Nazar Maksymchuk
+V 0.1 Nightly
 
+*/
 firsttime = true;
-var artist, album, artwork, titles, duration, links;
 function createFile() {
   firsttime = false;
   // remove HTML code/appended
@@ -117,78 +106,41 @@ function createFile() {
     $("#links").html("");
 		$("#htmlplayground").html("");
   }
-	// Get Data from input
   artist = $("#artist").val();
   album = $("#album").val();
   artwork = $("#artwork").val();
   input = $("#input").val();
-	// Replace content in that element w/ user input
   $("#htmlplayground").html(input);
-	// Declare duration as a varible to append later
-  duration = [];
-	// Get title of the track based on the text next to the link text
   titles = $("#htmlplayground a").map(function() {
     return this.previousSibling.nodeValue;
   });
-  // console.log(titles);
-	// The same as titles, only to retrieve links
+  console.log(titles);
   links = $("#htmlplayground a").map(function() {
     return this.href;
   }).get();
-  // console.log(links);
-	// Clean up the HTML section of user input
+  console.log(links);
+	rtime = [];
+	function getTime(n) {
+		$("#audiotrack" + n).on("canplaythrough", function(e){
+			var myAudio = document.getElementById("audiotrack" + n); //Object Identifier
+			var duration = parseInt(myAudio.duration.toFixed()); // Get duration of the Track and Round it and convert it into a integer
+			time[n] = duration;
+		});
+	}
 	$("#htmlplayground").html("");
-	// for Each track link
-
-	// Append HTML Player
 	$.each(links, function(n) {
-		// on play status
-		getDuration(n);
+		var link = links[n];
+		$("#htmlplayground").append("<audio id=\"audiotrack" + n +"\" src=\""+ link +"\"></audio>");
+		getTime(n);
 	});
-	appendAudio(0);
-	durationLength();
-}
-var i = 0;
-var runs = links.length-1;
-function appendAudio(n) {
-	console.log(i,": Horse run. Out ouf ",runs);
-	if(i != runs) {
-		$("#htmlplayground").append("<audio id=\"audiotrack" + n +"\" src=\""+ links[n] +"\" controls></audio>");
-		i++;
-		appendAudio(i);
-	} else {
-		console.log(i,": Horse run complete.")
-		// Clean up HTML after function has done it's job
-		// $("#htmlplayground").html();
-	}
-}
-function getDuration(n) {
-	$("#audiotrack" + n).on("canplaythrough", function(e){
-		// declare elment in a variable
-		var myAudio = document.getElementById("audiotrack" + n); //Object Identifier
-		// parse the duration and append it into the array
-		console.log("Setting duration for", n);
-		duration[n] = parseInt(myAudio.duration.toFixed()); // Get duration of the Track and Round it and convert it into a integer
-		// set loaded for that track - track duration is in the list/verification
-	});
-}
-function durationLength() {
-	if(duration !=0) {
-		createPlayer();
-	} else {
-		console.log("Timeout");
-		setTimeout(function() {durationLength();}, 2000);
-	}
-}
-function createPlayer() {
-	console.log("Creating Player for", artist , "-", album);
-	output = "<div id=\"amazingaudioplayer-1\" style=\"display:block;position:relative;width:100%;height:auto;margin:0px auto 0px;\">\n\t<ul class=\"amazingaudioplayer-audios\" style=\"display:none;\">\n";
-	$.each(links, function(n) {
-		output += "\t\t<li data-artist=\""+artist+"\" data-title=\"" + titles[n] + "\" data-album=\""+album+"\" data-info=\"\" data-image=\""+artwork+"\" data-duration=\""+duration[n]+"\">\n\t\t<div class=\"amazingaudioplayer-source\" data-src=\"" + links[n]+ " \" data-type=\"audio/mpeg\"></div>\n\t\t</li>\n";
-	});
-	output += "\t</ul>\n\n</div>";
-	$("#output").val(output);
-	console.log("Player has been created successfully!");
+	console.log(time);
+  output = "<div id=\"amazingaudioplayer-1\" style=\"display:block;position:relative;width:100%;height:auto;margin:0px auto 0px;\">\n\t<ul class=\"amazingaudioplayer-audios\" style=\"display:none;\">\n";
+  outputi = $.each(links, function(n) {
+    output += "\t\t<li data-artist=\""+artist+"\" data-title=\"" + titles[n] + "\" data-album=\""+album+"\" data-info=\"\" data-image=\""+artwork+"\" data-duration=\""+time+"\">\n\t\t<div class=\"amazingaudioplayer-source\" data-src=\"" + links[n]+ " \" data-type=\"audio/mpeg\"></div>\n\t\t</li>\n";
+  });
+  output += "\t</ul>\n\n</div>";
+  $("#output").val(output);
+	output = null;	titles = null;	links = null;	artist = null;	album = null;	artwork = null;	input = null; time = null;
 }
 </script>
 <footer id="footer" style="background-color:#333;">
