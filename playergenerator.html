@@ -30,20 +30,17 @@
 </button>
 <div class="navbar-brand">
 <a href="/">
-<img src="http://www.days4god.com/logo.svg"><!--- <span>modernity</span> --->
+<img src="http://www.days4god.com/logo.svg">
 </a>
 </div>
 </div>
 <nav class="collapse navbar-collapse navbar-right" role="navigation">
 <div class="main-menu">
-<!-- <sblock_nmenu> -->
 
-<!-- <bc> --><div id="uNMenuDiv1" class="uMenuV"><ul class="uMenuRoot">
+<div id="uNMenuDiv1" class="uMenuV"><ul class="uMenuRoot">
 <li><a href="/"><span>Главная страница</span></a></li>
 
-</ul></div><!-- </bc> -->
-
-<!-- </sblock_nmenu> -->
+</ul></div>
 
 </div></nav>
 </div>
@@ -255,11 +252,17 @@ function checkdurationLength() {
 }
 function createPlayer() {
 	console.log("Creating Player for", artist , "-", album);
-	output = "<div id=\"amazingaudioplayer-1\" style=\"display:block;position:relative;width:100%;height:auto;margin:0px auto 0px;\">\n\t<ul class=\"amazingaudioplayer-audios\" style=\"display:none;\">\n";
-	$.each(links, function(n) {
-		output += "\t\t<li data-artist=\""+artist+"\" data-title=\"" + titles[n] + "\" data-album=\""+album+"\" data-info=\"\" data-image=\""+artwork+"\" data-duration=\""+duration[n]+"\">\n\t\t<div class=\"amazingaudioplayer-source\" data-src=\"" + links[n]+ " \" data-type=\"audio/mpeg\"></div>\n\t\t</li>\n";
+	output = "<div style=\"margin:12px auto;\" align=\"center\">\n\t<div id=\"amazingaudioplayer-1\" style=\"display:block;position:relative;width:100%;height:auto;margin:0px auto 0px;\">\n\t\t<ul class=\"amazingaudioplayer-audios\" style=\"display:none;\">\n";
+	$.each(links, function(n) { // loop through each and create a li element
+		output += "\t\t\t<li data-artist=\""+artist+ //insert value into data-type
+							"\" data-title=\"" + titles[n] + //insert value into data-type
+							"\" data-album=\""+album+ //insert value into data-type
+							"\" data-info=\"\" data-image=\""+artwork+ //insert value into data-type
+							"\" data-duration=\""+duration[n]+ //insert value into data-type
+							"\">\n\t\t\t\t<div class=\"amazingaudioplayer-source\" data-src=\"" + links[n]+ //insert value into data-type
+							" \" data-type=\"audio/mpeg\"></div>\n\t\t\t</li>\n";
 	});
-	output += "\t</ul>\n\n</div>";
+	output += "\t\t</ul>\n\t	</div>\n</div>";
 	$("#output").val(output);
 	console.log("Player has been created successfully!");
 }
