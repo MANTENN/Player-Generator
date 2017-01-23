@@ -115,6 +115,7 @@ function createFile() {
   if(firsttime == false) {
     $("#links").html("");
 		$("#htmlplayground").html("");
+		console.log("Clearing Variables");
 		artist ="";
 		album = "";
 		artwork = "";
@@ -122,14 +123,15 @@ function createFile() {
 		links = [];
 		duration = [];
 		tracks = "";
+		n = 0;
 		firsttime = false;
+		console.clear();
 	}
 	// Get Data from input
   artist = $("#artist").val();
   album = $("#album").val();
   artwork = $("#artwork").val();
   input = $("#input").val();
-	console.log(artist,album,artwork,input);
 	// Replace content in that element w/ user input
   $("#htmlplayground").html(input);
 	// Get title of the track based on the text next to the link text
@@ -203,7 +205,6 @@ function createPlayer() {
 	output += "\t\t</ul>\n\t</div>\n</div>";
 	$("#output").val(output);
 	console.log("Player has been created successfully!");
-	console.log("Clearing Variables");
 }
 </script>
 <footer id="footer" style="background-color:#333;">
