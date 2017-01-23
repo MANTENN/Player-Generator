@@ -30,21 +30,17 @@
 </button>
 <div class="navbar-brand">
 <a href="/">
-<img src="http://www.days4god.com/logo.svg"><!--- <span>modernity</span> --->
+<img src="http://www.days4god.com/logo.svg">
 </a>
 </div>
 </div>
 <nav class="collapse navbar-collapse navbar-right" role="navigation">
 <div class="main-menu">
-<!-- <sblock_nmenu> -->
 
-<!-- <bc> --><div id="uNMenuDiv1" class="uMenuV"><ul class="uMenuRoot">
+<div id="uNMenuDiv1" class="uMenuV"><ul class="uMenuRoot">
 <li><a href="/"><span>Главная страница</span></a></li>
 
-</ul></div><!-- </bc> -->
-
-<!-- </sblock_nmenu> -->
-
+</ul></div>
 </div></nav>
 </div>
 </header>
@@ -110,22 +106,30 @@ $(document).ready(function() {
 
 firsttime = true;
 // Global variables to be used throughout multiple functions
-var artist, album, artwork,tracks;
+var artist, album, artwork, tracks;
 var links = [];
 var titles= [];
 var duration = [];
 function createFile() {
-  firsttime = false;
   // remove HTML code/appended if it is the second time and so on.
   if(firsttime == false) {
     $("#links").html("");
 		$("#htmlplayground").html("");
-  }
+		artist ="";
+		album = "";
+		artwork = "";
+		titles = [];
+		links = [];
+		duration = [];
+		tracks = "";
+		firsttime = false;
+	}
 	// Get Data from input
   artist = $("#artist").val();
   album = $("#album").val();
   artwork = $("#artwork").val();
   input = $("#input").val();
+	console.log(artist,album,artwork,input);
 	// Replace content in that element w/ user input
   $("#htmlplayground").html(input);
 	// Get title of the track based on the text next to the link text
@@ -133,13 +137,11 @@ function createFile() {
   titles = $("#htmlplayground a").map(function() {
     return this.previousSibling.nodeValue;
   });
-	console.clear();
 	// The same as titles, only to retrieve links
 	console.log("Gathering links");
   links = $("#htmlplayground a").map(function() {
     return this.href;
   }).get();
-	console.clear();
 	tracks = links.length;
 	// Append HTML Player
 	console.log("Appending Tracks...");
@@ -154,9 +156,9 @@ function appendAudio(n) {
 		getDuration(n);
 	} else {
 		console.log("Process Complete.")
-		createPlayer();
+		checkdurationLength();
 		// Clean up HTML after function has done it's job
-		$("#htmlplayground").html();
+		// $("#htmlplayground").html();
 	}
 }
 function getDuration(n) {
@@ -178,6 +180,14 @@ function getDurationLoop(n) {
 		appendAudio(n);
 	}
 }
+function checkdurationLength() {
+	if(duration.length == tracks) {
+		createPlayer();
+	} else {
+		console.log("Timeout");
+		setTimeout(function() {checkdurationLength();}, 2000);
+	}
+}
 function createPlayer() {
 	console.log("Creating Player for", artist , "-", album);
 	output = "<div style=\"margin:12px auto;\" align=\"center\">\n\t<div id=\"amazingaudioplayer-1\" style=\"display:block;position:relative;width:100%;height:auto;margin:0px auto 0px;\">\n\t\t<ul class=\"amazingaudioplayer-audios\" style=\"display:none;\">\n";
@@ -193,6 +203,7 @@ function createPlayer() {
 	output += "\t\t</ul>\n\t</div>\n</div>";
 	$("#output").val(output);
 	console.log("Player has been created successfully!");
+	console.log("Clearing Variables");
 }
 </script>
 <footer id="footer" style="background-color:#333;">
