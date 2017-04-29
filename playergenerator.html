@@ -3,10 +3,6 @@
 <head>
 <title>Playlist Generator</title>
 <meta charset="utf-8" />
-<script
-			  src="http://code.jquery.com/jquery-3.1.1.min.js"
-			  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-			  crossorigin="anonymous"></script>
 				<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
 				<meta name="format-detection" content="telephone=no">
 				<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -48,6 +44,7 @@
 <section class="global-page-header music">
  <div class="container">
  <div class="row">
+<div class="progress" style="position: relative;margin: 2px 15px;top: 0;height: 5px;"><div class="progress-bar" id="executionProgress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>
  <div class="col-md-10">
  <div class="block">
  <h2>Generator</h2>
@@ -93,28 +90,20 @@ textarea {
 }
 </style>
 <script>
-$(document).ready(function() {
-	$("#url-path").keyup(function(e) {
-		url = $("#url-path").val();
-		if(url != "") {
-			$("#artist,#album,#artwork,#input").prop("disabled",true);
-		} else {
-			$("#artist,#album,#artwork,#input").prop("disabled",false);
-		}
-	});
-});
-
-firsttime = true;
+var firsttime = true;
 // Global variables to be used throughout multiple functions
 var artist, album, artwork, tracks;
 var links = [];
 var titles= [];
 var duration = [];
+var htmlplayground = document.getElementById("htmlplayground");
+var progress;
 function createFile() {
   // remove HTML code/appended if it is the second time and so on.
   if(firsttime == false) {
-    $("#links").html("");
-		$("#htmlplayground").html("");
+    console.log("Clean up in Progress.");
+    document.getElementById("links").innerHTML = "";
+		document.getElementById("htmlplayground").innerHTML = "";
 		console.log("Clearing Variables");
 		artist ="";
 		album = "";
@@ -124,35 +113,36 @@ function createFile() {
 		duration = [];
 		tracks = "";
 		n = 0;
-		console.clear();
+		progress = 0;
+		document.getElementById("output").value = "";
+		//console.clear();
 	}
   firsttime = false;
 	// Get Data from input
-  artist = $("#artist").val();
-  album = $("#album").val();
-  artwork = $("#artwork").val();
-  input = $("#input").val();
+  artist = document.getElementById("artist").value;
+  album = document.getElementById("album").value;
+  artwork = document.getElementById("artwork").value;
+  input = document.getElementById("input").value;
 	// Replace content in that element w/ user input
-  $("#htmlplayground").html(input);
+  document.getElementById("htmlplayground").innerHTML = input;
 	// Get title of the track based on the text next to the link text
-	console.log("Gathering track titles.");
-  titles = $("#htmlplayground a").map(function() {
-    return this.previousSibling.nodeValue;
-  });
-	// The same as titles, only to retrieve links
-	console.log("Gathering links");
-  links = $("#htmlplayground a").map(function() {
-    return this.href;
-  }).get();
+	console.log("Gathering track titles and links.");
+	for (i=0; i < htmlplayground.childNodes.length; i++) {
+		document.getElementById("htmlplayground").innerHTML = input;
+		if(htmlplayground.childNodes[i].nodeName == "A") {
+			titles.push(htmlplayground.childNodes[i].previousSibling.nodeValue); //Push each Title to the array
+			links.push(htmlplayground.childNodes[i].href); // Like the titles, except for links
+		}
+	}
 	tracks = links.length;
-	// Append HTML Player
+	// Append HTML "<audio>" player
 	console.log("Appending Tracks...");
 	appendAudio(0);
 }
 
 function appendAudio(n) {
 	if(n != tracks) { // recursive loop
-		$("#htmlplayground").html("<audio id=\"audiotrack" + n +"\" src=\""+ links[n] +"\" autoplay muted></audio>");
+		htmlplayground.innerHTML = "<audio id=\"audiotrack" + n +"\" src=\""+ links[n] +"\" autoplay muted></audio>";
 		// get Duration of the track appended above
 		console.log("Getting Duration for\n",n+1, ". ",titles[n]);
 		getDuration(n);
@@ -164,20 +154,21 @@ function appendAudio(n) {
 	}
 }
 function getDuration(n) {
-	$("#audiotrack" + n).on("canplaythrough", function(e){
+	document.getElementById("audiotrack" + n).oncanplaythrough = function () {
 		// declare elment in a variable
 		var myAudio = document.getElementById("audiotrack" + n); //Object Identifier
 		// parse the duration and append it into the array
 		duration[n] = parseInt(myAudio.duration.toFixed()); // Get duration of the Track and Round it and convert it into a integer
 		console.log("Duration Set.");
 		getDurationLoop(n);
-	});
+	}
+	executionProgress(n);
 }
 function getDurationLoop(n) {
 	if(duration[n] == undefined) {
 		getDuration(n);
 	} else {
-		console.clear();
+		//console.clear();
 		n++; // check before getting distracted
 		appendAudio(n);
 	}
@@ -186,14 +177,15 @@ function checkdurationLength() {
 	if(duration.length == tracks) {
 		createPlayer();
 	} else {
-		console.log("Timeout");
-		setTimeout(function() {checkdurationLength();}, 2000);
+		console.log("Extra values in Duration");
 	}
 }
 function createPlayer() {
+	executionProgress(100);
+	htmlplayground.innerHTML = "";
 	console.log("Creating Player for", artist , "-", album);
 	output = "<div style=\"margin:12px auto;\" align=\"center\">\n\t<div id=\"amazingaudioplayer-1\" style=\"display:block;position:relative;width:100%;height:auto;margin:0px auto 0px;\">\n\t\t<ul class=\"amazingaudioplayer-audios\" style=\"display:none;\">\n";
-	$.each(links, function(n) { // loop through each and create a li element
+	for(n = 0; n < links.length; n++) {
 		output += "\t\t\t<li data-artist=\""+artist+ //insert value into data-type
 							"\" data-title=\"" + titles[n] + //insert value into data-type
 							"\" data-album=\""+album+ //insert value into data-type
@@ -201,10 +193,14 @@ function createPlayer() {
 							"\" data-duration=\""+duration[n]+ //insert value into data-type
 							"\">\n\t\t\t\t<div class=\"amazingaudioplayer-source\" data-src=\"" + links[n]+ //insert value into data-type
 							" \" data-type=\"audio/mpeg\"></div>\n\t\t\t</li>\n";
-	});
+	}
 	output += "\t\t</ul>\n\t</div>\n</div>";
-	$("#output").val(output);
+	document.getElementById("output").value = output;
 	console.log("Player has been created successfully!");
+}
+function executionProgress(percent) {
+	progress = percent;
+	document.getElementById('executionProgress').style.width = progress +"%";
 }
 </script>
 <footer id="footer" style="background-color:#333;">
