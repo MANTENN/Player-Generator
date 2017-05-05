@@ -13,9 +13,6 @@ var inProgress;
 function createFile() {
 	inProgress = true;
 	progress = 0;
-	progressTotal = 1;
-  updateProgressBar();
-	progress = 1;
   // remove HTML code/appended if it is the second time and so on.
   if(firsttime == false) { //Reset - Clean Up
     console.log("Clean up in Progress.");
@@ -36,19 +33,14 @@ function createFile() {
 	}
   firsttime = false;
 	// Get Data from input
-	progress += 1; // 1
   artist = document.getElementById("artist").value;
-	progress += 1; // 2
   album = document.getElementById("album").value;
-	progress += 1; // 3
   artwork = document.getElementById("artwork").value;
-	progress += 1; // 4
   input = document.getElementById("input").value;
 	// Replace content in that element w/ user input
-	progress += 1; // 5
   document.getElementById("htmlplayground").innerHTML = input;
 	// Get title of the track based on the text next to the link text
-	console.log("Gathering track titles and links.");
+	console.log("Gathering tracks, titles and links.");
 	for (i=0; i < htmlplayground.childNodes.length; i++) {
 		document.getElementById("htmlplayground").innerHTML = input;
 		if(htmlplayground.childNodes[i].nodeName == "A") {
@@ -58,7 +50,7 @@ function createFile() {
 			links.push(htmlplayground.childNodes[i].href); // Like the titles, except for links
 		}
 	}
-	progress += 1; // 6
+	progress += 8; // 6
 	tracks = links.length;
 	// Append HTML "<audio>" player
 	progressTotal = tracks*5 + 11;
@@ -84,7 +76,12 @@ function appendAudio(n) {
 	updateProgressBar();
 	if(n != tracks) { // recursive loop
 		console.log("Appending track,\n", (n+1) ,": ", titles[n]);
-		htmlplayground.innerHTML = "<audio id=\"audiotrack" + n +"\" src=\""+ links[n] +"\" autoplay muted></audio>";
+		var audio = document.createElement("audio");
+			audio.src = links[n]; // Assign attribute values
+			audio.id = "audiotrack" + n;
+			audio.autoplay = true;
+			audio.muted = true;
+		htmlplayground.innerHTML = audio.outerHTML;
 		// get Duration of the track appended above
 		console.log("Getting duration");
 		getDuration(n);
