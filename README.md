@@ -10,12 +10,13 @@ Paste html from previous post of the track list with links. The script looks for
     <b>02.</b> Крылья веры <a href="http://days4god.org/music/anastasija_nakonechnaja/novaja_palitra_neba/02.%20%D0%9A%D1%80%D1%8B%D0%BB%D1%8C%D1%8F%20%D0%B2%D0%B5%D1%80%D1%8B.mp3" title="Скачать"><img alt="Скачать" src="http://days4god.org/save.png" style="border: medium none;"></a><br>
     <b>03.</b> Вернуться к самому себе <a href="http://days4god.org/music/anastasija_nakonechnaja/novaja_palitra_neba/03.%20%D0%92%D0%B5%D1%80%D0%BD%D1%83%D1%82%D1%8C%D1%81%D1%8F%20%D0%BA%20%D1%81%D0%B0%D0%BC%D0%BE%D0%BC%D1%83%20%D1%81%D0%B5%D0%B1%D0%B5.mp3" title="Скачать"><img alt="Скачать" src="http://days4god.org/save.png" style="border: medium none;" title="Скачать">
 ...
-
-## Sample output
-The output consists of html marked up for a script by amazingaudioplayer, which is going to use it to initialize a player w/ a playlist.
 Input must be in the following format:
 Text(#text) Anchor Tag(a)
+```
 Track Title <a href="https://www.example.com/tracktitle.mp3">Download</a>
+```
+## Sample output
+The output consists of html marked up for a script by amazingaudioplayer, which is going to use it to initialize a player w/ a playlist.
 
 ```
 <div style="margin:12px auto;" align="center">
