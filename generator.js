@@ -41,8 +41,8 @@ function createFile() {
   document.getElementById("htmlplayground").innerHTML = input;
 	// Get title of the track based on the text next to the link text
 	console.log("Gathering tracks, titles and links.");
+	document.getElementById("htmlplayground").innerHTML = input;
 	for (i=0; i < htmlplayground.childNodes.length; i++) {
-		document.getElementById("htmlplayground").innerHTML = input;
 		if(htmlplayground.childNodes[i].nodeName == "A") {
 			progress += 1;
 			titles.push(htmlplayground.childNodes[i].previousSibling.nodeValue); //Push each Title to the array
