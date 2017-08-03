@@ -15,7 +15,8 @@ Paste html from previous post of the track list with links. The script looks for
 The output consists of html marked up for a script by amazingaudioplayer, which is going to use it to initialize a player w/ a playlist.
 Input must be in the following format:
 Text(#text) Anchor Tag(a)
-```Track Title <a href="https://www.example.com/tracktitle.mp3">Download</a>```
+Track Title <a href="https://www.example.com/tracktitle.mp3">Download</a>
+
 ```
 <div style="margin:12px auto;" align="center">
 	<div id="amazingaudioplayer-1" style="display:block;position:relative;width:100%;height:auto;margin:0px auto 0px;">
