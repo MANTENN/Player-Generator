@@ -3,7 +3,7 @@
 I used to manually take every link, track title and duration of each track, this is a automation tool I made to create a playlist for amazingaudioplayer based on the place of track titles and links.
 
 ## How it works
-Paste html from previous post of the track list with links. The script looks for a link and text that comes before it is used as the tracks title.
+Paste html from previous post of the track list with links. The script looks for a link and the text that comes before it is used as the tracks title.
 
 ## Sample input
     <b>01.</b> Новая палитра неба <a href="http://days4god.org/music/anastasija_nakonechnaja/novaja_palitra_neba/01.%20%D0%9D%D0%BE%D0%B2%D0%B0%D1%8F%20%D0%BF%D0%B0%D0%BB%D0%B8%D1%82%D1%80%D0%B0%20%D0%BD%D0%B5%D0%B1%D0%B0.mp3" title="Скачать"><img alt="Скачать" src="http://days4god.org/save.png" style="border: medium none;"></a><br>
