@@ -1,6 +1,6 @@
 # Player Markup Generator for Days4God
 ## Description
-I used to manually take every link, track title and duration of each track, this is a automation tool I made to create a playlist for amazingaudioplayer based on the place of track titles and links.
+I used to manually take every link, track title and duration of each track and create a html based markup for Amazing Audio Player, this is an automation tool I made to create a markup for amazingaudioplayer based on the place of track titles and links.
 
 ## How it works
 Paste html from previous post of the track list with links. The script looks for a link and the text before it is used as the tracks title.
