@@ -1,15 +1,88 @@
-var createButton = document.getElementById('buttonCreate');
-var clearButton = document.getElementById('clearInput');
-var firsttime = true;
+/*
+	@Author: Nazar Maksymchuk
+	@Purpose: Generate HTML code, an outline for AmazingAudioPlayer, based on how track data is outlined on Days4God
+*/
+// Go back on stackoverflow to see how to use MAP - array function
+var createButton = document.getElementById('buttonCreate'),
+		clearButton = document.getElementById('clearInput'),
+		firstTime = !0, //Unneccessary; Resets by default
+		htmlplayground = document.getElementById('htmlplayground'), // Remove this, As data will be parsed through DOM?
+		audioData = document.getElementById("input");
+
 // Global variables to be used throughout multiple functions
-var artist, album, artwork, tracks;
-var links = [];
-var titles= [];
-var duration = [];
-var htmlplayground = document.getElementById('htmlplayground');
-var progress;
-var progressTotal;
-var inProgress;
+
+var generatorData = {
+		artist: "",
+		album: "",
+		artwork: "",
+		progress: 0,
+		progressTotal: 0,
+		inProgress: 0,
+		links: [],
+		titles: [],
+		duration: [],
+		information: ""
+	};
+var initializeGenerator = function () {
+	initializeGenerator.reset();
+	inProgress = !0;// True, First Time...
+	generatorData.information = string2DOM(audioData, "text/html");
+	//Pushes links, and Titles to their proper places
+	var gD = generatorData;
+	gD.information.body.childNodes.forEach(function(item, i) {
+		if(item.nodeName === "A" && item.hostname == "days4god.org" || item.hostname == "days4god.net") {
+			console.log(i,": Link had been pushed into the Array\n")
+			gD.links.push(item.href)
+		} else if(item.nodeName === "#text" && item.nextElementSibling.nodeName === "A") {
+			gD.titles.push(item.nodeValue.replace(/^\s\s*/, '').replace(/\s\s*$/, ''))
+			console.log(i,": Title had been pushed into the Array\n")
+		}
+	})
+	progressTotal = Math.round(gD.links.length + gD.titles.length / 2) + 2;
+	initializeGenerator.getAudioDuration(0, function(n, duration) {
+		generatorData.duration[n] = parseInt(duration.toFixed());
+	})
+	/*if(gD.links.length != gD.titles.length || gD.titles.length != gD.duration.length) {
+		console.warn("An unknown error has occured.\n", "\tThere are " + gD.links.length + " track links in the list, please double check and make sure they are properly ordered.\n","\tThere are " + gD.titles.length + " track titles in the list, please double check and make sure they are properly ordered.\n","\tThere are " + gD.duration.length + " duration records -- the amount should be equal to the number of tracks -- in the list, please double check and make sure they are properly ordered.\n")
+	}*/
+	// Devise a Async refresh system
+}
+initializeGenerator.reset = function () {
+	Object.keys(generatorData).map(function (key) {
+		var prop = generatorData[key].constructor; // Element's constructor function, Array, String, Object, etc.
+		return prop == Array ? generatorData[key] = [] : prop == Object ? generatorData[key] = {} : generatorData[key] = ""
+	})
+	inProgress = !0;
+}
+initializeGenerator.progress = function () {
+	return progressTotal || "0";
+}
+initializeGenerator.getAudioDuration = function (n, callback) {
+	if(n != generatorData.links.length) { // recursive loop
+		var audio = new Audio();
+		audio.onloadedmetadata = function () {
+			callback(n, audio.duration)
+		}
+		audio.onerror = function (e) {
+			// Warn the user via UI to improve the UX - instead of console
+			console.error("During the Audio the request, an error has occured.");
+			callback(n, 0);
+		}
+		audio.src = generatorData.links[n]
+		return initializeGenerator.getAudioDuration(n+1, callback)
+	}
+}
+function progressBar() {
+	return progressTotal || "0";
+}
+
+function string2DOM(data, type) {
+	var audioDataDOM = new DOMParser().parseFromString(data.value, type);
+	return audioDataDOM;
+}
+
+
+// old code
 function createFile() {
 	inProgress = true;
 	progress = 0;
