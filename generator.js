@@ -37,14 +37,13 @@ var initializeGenerator = function () {
 
 	completed = setInterval(
 		function() {
-			console.log("Waiting on duration to be pulled for all values, to check, type in \"generatorData.duration\"");
 			initializeGenerator.updateProgressBar();
 			if(checkStatus()) {
 				renderHTML();
-				console.log("Completed!")
+				console.log("Player Structure Generated!")
 				clearInterval(completed);
 			}
-		}, 1000);
+		}, 5000);
 	initializeGenerator.reset();
 	artist = document.getElementById("artist").value;
 	album = document.getElementById("album").value;
@@ -78,6 +77,7 @@ initializeGenerator.reset = function () {
 		var prop = generatorData[key].constructor; // Element's constructor function, Array, String, Object, etc.
 		return prop == Array ? generatorData[key] = [] : prop == Object ? generatorData[key] = {} : prop == String ? generatorData[key] = "" : generatorData[key] = 0
 	})
+	initializeGenerator.updateProgressBar();
 	inProgress = !0;
 	artist = "";
 	album = "";
@@ -127,6 +127,7 @@ function renderHTML() {
 	console.log("Player Outline has been Generated")
 }
 function clearInput() {
+	initializeGenerator.reset();
 	document.getElementById("artist").value = "";
   document.getElementById("album").value = "";
   document.getElementById("artwork").value = "";
