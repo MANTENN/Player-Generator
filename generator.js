@@ -82,6 +82,7 @@ initializeGenerator.reset = function () {
 	artist = "";
 	album = "";
 	artwork = "";
+	$("#amazingaudioplayer-1").html("");
 }
 initializeGenerator.getAudioDuration = function (n, callback) {
 	if(n != generatorData.links.length) { // recursive loop
@@ -124,6 +125,81 @@ function renderHTML() {
 	outputEl.value = output;
 	document.getElementById("clearInput").disabled = false;
 	document.getElementById("buttonPreview").disabled = false;
+	$("#amazingaudioplayer-1").html(output);
+	var jsFolder = "/musicplayer/";
+	jQuery("#amazingaudioplayer-1").amazingaudioplayer({
+        jsfolder:jsFolder,
+        skinsfoldername:"",
+        titleinbarwidthmode:"fixed",
+        timeformatlive:"%CURRENT% / LIVE",
+        volumeimagewidth:24,
+        barbackgroundimage:"",
+        showtime:false,
+        titleinbarwidth:80,
+        showprogress:true,
+        random:false,
+        titleformat:"%TITLE%",
+        height:300,
+        loadingformat:"Loading...",
+        prevnextimage:"prevnext-48-48-1.png",
+        showinfo:true,
+        imageheight:180,
+        skin:"LightBox",
+        loopimage:"loop-24-24-2.png",
+        loopimagewidth:24,
+        showstop:false,
+        prevnextimageheight:48,
+        infoformat:"%ARTIST% %ALBUM%<br />%INFO%",
+        stopotherplayers:true,
+        showloading:false,
+        forcefirefoxflash:false,
+        showvolumebar:true,
+        imagefullwidth:true,
+        width:300,
+        showtitleinbar:false,
+        showloop:true,
+        volumeimage:"volume-24-24-2.png",
+        playpauseimagewidth:48,
+        loopimageheight:24,
+        tracklistitem:99,
+        tracklistitemformat:"%ID%. %TITLE% <span class='amazingaudioplayer-track-duration'>%DURATION%</span>",
+        prevnextimagewidth:48,
+        tracklistarrowimage:"tracklistarrow-16-16-0.png",
+        forceflash:false,
+        playpauseimageheight:48,
+        showbackgroundimage:false,
+        imagewidth:300,
+        stopimage:"stop-48-48-0.png",
+        playpauseimage:"playpause-48-48-1.png",
+        forcehtml5:false,
+        showprevnext:true,
+        backgroundimage:"",
+        autoplay:false,
+        volumebarpadding:8,
+        progressheight:8,
+        showtracklistbackgroundimage:false,
+        titleinbarscroll:true,
+        showtitle:true,
+        defaultvolume:100,
+        tracklistarrowimageheight:16,
+        heightmode:"fixed",
+        titleinbarformat:"%TITLE%",
+        showtracklist:true,
+        stopimageheight:48,
+        volumeimageheight:24,
+        stopimagewidth:48,
+        volumebarheight:80,
+        noncontinous:false,
+        tracklistbackgroundimage:"",
+        showbarbackgroundimage:false,
+        showimage:true,
+        tracklistarrowimagewidth:16,
+        timeformat:"%CURRENT% / %DURATION%",
+        showvolume:true,
+        fullwidth:true,
+        loop:1,
+        preloadaudio:true
+    });
 	console.log("Player Outline has been Generated")
 }
 function clearInput() {

@@ -89,11 +89,15 @@
 							</div>
 							<div class="col-md-6 pull-right">
 								<input value="Создать" id="buttonCreate" class="pull-right" type="button">
-								<input value="Предпросмотр" disabled="true" id="buttonPreview" class="pull-right" type="button">							</div>
+								<input value="Предпросмотр" disabled="true" id="buttonPreview" class="pull-right" type="button" data-toggle="modal" data-target="#myModal">
+							</div>
 						</div>
 					</div>
 				</div>
 				<style>
+				#top-bar {
+					height: 65px;
+				}
 				input[type="text"],textarea {
 					border:2px solid #e1e1e1;
 					border-radius: 5px;
@@ -250,6 +254,36 @@
 			</div>
 			</div>
 			</footer>
+			<script type="text/javascript" src="http://days4god.com/.s/src/jquery-1.10.2.js"></script>
+			<script src="http://www.days4god.org/musicplayer/amazingaudioplayer.js"></script>
 			<script src="generator.js"></script>
+			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				 <div class="modal-dialog" role="document">
+					 <div class="modal-content">
+						 <div class="modal-header">
+							<div class="row" style="padding: 10px 15px 0 15px;">
+								<h2 class="modal-title pull-left" id="exampleModalLabel">Предпросмотр</h2>
+								<button type="button" class="close pull-right" data-dismiss="modal" aria-label="Закрыть">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+						 </div>
+						 <div class="modal-body">
+							<div id="amazingaudioplayer-1">Player is being Loaded</div>
+							<link rel="stylesheet" type="text/css" href="/musicplayer/initaudioplayer-1.css">
+							<style>
+							#amazingaudioplayer-1 {
+							 max-width:300px;
+							 margin: auto;
+							}
+							</style>
+						 </div>
+						 <div class="modal-footer">
+							<input type="button" class="btn btn-primary" data-dismiss="modal" value="Закрыть">
+						 </div>
+					 </div>
+				 </div>
+			</div>
 	</body>
 </html>
